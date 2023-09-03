@@ -1,0 +1,1 @@
+# spring-boot-cli 是一个SpringBoot项目脚手架，方便快速构建项目
