@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.xgz</groupId>
+        <groupId>com.xgz.cli</groupId>
         <artifactId>spring-boot-cli</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>cli-dao</artifactId>
@@ -17,4 +18,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.xgz.cli</groupId>
+            <artifactId>cli-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>

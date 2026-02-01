@@ -1,0 +1,206 @@
+server:
+  port: 9119
+  servlet:
+    context-path: /api/cli
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  datasource:
+    dynamic:
+      primary: master  # 设置默认的数据源或者数据源组，默认值即为master
+      strict: false # 严格匹配数据源，默认false。true：未匹配到指定数据源时抛异常，false：使用默认数据源
+      datasource:
+        master:
+          url: jdbc:mysql://127.0.0.1:3306/cli_demo?useUnicode=true&characterEncoding=utf-8&useSSL=false
+          username: root
+          password: gang8579
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          druid:
+            initial-size: 10
+            max-active: 30
+            min-idle: 5
+            max-wait: 60000
+  data:
+    mongodb:
+      uri: mongodb://root:W_s4I1bUiKpPI5vG@127.0.0.1:27017/cli_demo?authSource=admin&connectTimeoutMS=30000&socketTimeoutMS=120000&maxWaitTimeMS=30000&maxPoolSize=100
+      auto-index-creation: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 1
+    clean-disabled: true
+  task:
+    pool:
+      corePoolSize: 4
+      maxPoolSize: 4
+      queueCapacity: 400
+      keepAliveSeconds: 60
+  redis:
+    enable: true
+    # 选择 single、sentinel 或 cluster
+    mode: single
+    host: 127.0.0.1
+    port: 6379
+    # 可选，如果 Redis 配置了密码
+    password: 123456
+    database: 0
+    sentinel:
+      # Sentinel 主节点名称
+      master: mymaster
+      nodes: "127.0.0.1:26379,127.0.0.1:26380,127.0.0.1:26381"
+      # 或者
+    #        - 127.0.0.1:26379
+    #        - 127.0.0.1:26380
+    #        - 127.0.0.1:26381
+    cluster:
+      nodes:
+        - 127.0.0.1:7000
+        - 127.0.0.1:7001
+        - 127.0.0.1:7002
+    # Lettuce 客户端相关配置
+#    lettuce:
+#      pool:
+#        max-active: 8  # 最大连接数
+#        max-idle: 8  # 最大空闲连接数
+#        min-idle: 0  # 最小空闲连接数
+#        max-wait: 10000ms  # 最大等待时间
+#      shutdown-timeout: 100  # Lettuce客户端的优雅关闭超时时间（毫秒）
+
+  # Kafka配置示例（只有在 mq.enabled=true & mq.type=KAFKA & mq.kafka.enabled=true 时才会真正启用）
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: cli-demo-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  config: classpath:logback-spring.xml
+#  level:
+#    com.iflytek.iflytest.dao: debug
+
+access-log:
+  enable: false
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /actuator
+  health:
+    elasticsearch:
+      enabled: false
+    mail:
+      enabled: false
+    redis:
+      enabled: false
+    db:
+      enabled: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    show-extensions: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.xgz.cli.app.controller
+  default-flat-param-object: false
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: 实体类列表
+    home-custom-path:
+  documents:
+    - name: 标题1
+      locations: classpath:markdown/*
+      group: default
+  basic:
+    enable: false
+    username: zhangsan
+    password: 123456
+  # 自动上传OpenAPI数据源到Knife4jInsight平台中
+  # 参考文档：http://knife4j.net
+  insight:
+    enable: false
+    namespace: knife4j-demo-openapi3
+    server: http://localhost:10086
+    secret: BudeU0urM30JTQ+YPZu1GddkG8h0fMgWuYeViSO4Y7Q=
+    service-name: knife4j-demo-openapi3
+
+# Sa-Token 配置
+sa-token:
+  # 是否启用satoken登录校验
+  enable: true
+  # token 的名称 同时也是cookie 名称
+  token-name: Authorization
+  # token有效期，单位s 默认8小时，-1代表永不过期。
+  timeout: 28800
+  # token 临时有效期(指定时间内无操作或者视为token过期) 单位 秒
+  active-timeout: -1
+  # 是否允许同一账号并发登录，true: 允许
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用同一个token（为true 的时候所有登录通用同一个token，为false 时每次登录新建一个 token)
+  is-share: false
+  # token 风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: true
+  isReadCookie: true
+  exclude-path-patterns:
+    - /login/**
+    - /user/hello
+    - /doc.html
+    - /swagger-ui.html
+    - /swagger-ui/**
+    - /v3/api-docs/**
+    - /actuator/**
+
+
+# MQ 统一开关/选择
+mq:
+  # 总开关：false 时不会创建 RocketMQ/Kafka 相关 Bean（即使地址配置错误也不会导致启动报错）
+  enabled: false
+  # 选择 ROCKETMQ 或 KAFKA
+  type: ROCKETMQ
+  rocketmq:
+    enabled: false
+  kafka:
+    enabled: false
+
+# RocketMQ配置（只有在 mq.enabled=true & mq.type=ROCKETMQ & mq.rocketmq.enabled=true 时才会真正启用）
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: producer-group
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 2
+    retry-times-when-send-async-failed: 2
+    compress-message-body-threshold: 4096
+    max-message-size: 4194304
+  consumer:
+    group: consumer-group

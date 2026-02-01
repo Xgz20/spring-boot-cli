@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="log.level" value="INFO" />
+	<property name="appName" value="cli-demo" />
+	<property name="log.maxHistory" value="30" />
+	<property name="log.maxFileSize" value="100MB" />
+	<springProperty scope="context" name="log_base" source="log.config.file.path" defaultValue="./logs"/>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoder 默认配置为PatternLayoutEncoder -->
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %thread %-5level %logger{36}:%line - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="ROLLING_FILE_COMMON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log_base}/app.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<FileNamePattern>${log_base}/history/app.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+			<MaxHistory>${log.maxHistory}</MaxHistory>
+
+			<timeBasedFileNamingAndTriggeringPolicy	class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 10MB -->
+				<maxFileSize>${log.maxFileSize}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %thread %-5level %logger{36}:%line - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="${log.level}">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="ROLLING_FILE_COMMON" />
+	</root>
+</configuration>

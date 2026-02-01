@@ -18,6 +18,7 @@ target/
 
 # Log Files
 *.log
+logs/
 
 *.bak
 *.tem
